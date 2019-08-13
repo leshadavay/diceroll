@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>201521641 주사위 문제 2</title>
+
+    <style>
+        body{
+            margin: 0;
+            text-align: center;
+            width: 100%;
+        }
+        caption{
+            border: 1px solid black;
+            font-weight: bold;
+            padding: 5px;
+            font-size: 22px;
+            background-color: #525252;
+            color: whitesmoke;
+        }
+        th{
+            padding: 10px;
+            border: 1px solid black;
+            text-align: center;
+            background-color: #525252;
+            color: whitesmoke;
+        }
+        td{
+            padding: 10px;
+            border: 1px solid black;
+            text-align: center;
+
+        }
+        tr:nth-child(even){
+            background-color: #eceeec;
+        }
+        tr:nth-child(odd){
+            background-color: #f9fbf9;
+        }
+        tr:last-child{
+            background-color: #525252;
+            color: whitesmoke;
+        }
+        table{
+            border-collapse: collapse;
+            border: 2px solid black;
+            margin: auto auto;
+            width: 90%;
+        }
+        div{
+            width: 100%;
+
+            margin-left: auto;
+            margin-right:  auto;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        label{
+            background-color:#272727;
+            border-radius: 15px;
+            border: 1px solid black;
+            color: whitesmoke;
+            padding:10px;
+        }
+        button{
+            border: unset;
+            background: unset;
+        }
+
+        button:hover{
+            cursor: pointer;
+            border: 1px solid black;
+        }
+
+        .stat-div tr{
+            background-color: unset;
+            height: 400px;
+            width: 100%;
+        }
+
+        .chart{
+            height: 300px;
+            width: 90%;
+
+        }
+        input[type=number]{
+            width: 90px;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+       
+        function makeFloatRand(min,max){
+            return (Math.random() * (max - min) + min).toFixed(3);
+        };
+        function makeIntRand(min,max){
+            return Math.floor(Math.random() * (max - min + 1) ) + min;
+        }
+        function getDice1NRoll(){
+            if (sessionStorage.getItem('d1nroll')==undefined){
+                sessionStorage.setItem('d1nroll',"100");
+                return 100;
+            }
+            else{
+                var nroll=sessionStorage.getItem('d1nroll');
+                return (parseInt(nroll));
+            }
+        }
+        function getDice2NRoll(){
+            if (sessionStorage.getItem('d2nroll')==undefined){
+                sessionStorage.setItem('d2nroll',"500000");
+                return 500000;
+            }
+            else{
+                var nroll=sessionStorage.getItem('d2nroll');
+                return (parseInt(nroll));
+            }
+        }
+
+        function diceRollSimulation(num,nrolls){
+
+            this.cnt=[];
+            this.avg=[];
+            this.side=null;
+            this.num=num;
+            this.nrolls=nrolls;
+            this.setNRoll=function (nroll) {
+                this.nrolls=nroll;
+            };
+            this.getAvg=function(){
+                return this.avg;
+            };
+            this.getCnt=function () {
+                return this.cnt;
+            };
+            this.roll=function() {
+                for (var i = 0; i < 6; i++)
+                    this.cnt[i] = 0;
+
+                for (var i = 0; i < nrolls; i++) {
+                    this.side = makeIntRand(0, 5);
+                    this.cnt[this.side]++;
+                }
+
+                document.writeln("<div><table><caption>" + "주사위 " + num + "</caption><tr><th>DICE SIDE</th><th>OCCURENCE</th></tr>");
+                for (var i = 0; i < 6; i++) {
+                    document.writeln("<tr><td>SIDE " + (i + 1) + "</td><td>" + this.cnt[i] + "</td></tr>");
+
+                }
+                document.writeln("<tr><td colspan='2'> DICE ROLL COUNT: &nbsp&nbsp <input id='" + this.num + "nroll' type='number' value='" + this.nrolls + "' maxlength='9' oninput='javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);'> <input type='submit' onclick='setNRoll(" + this.num + ");' value='ROLL'> <br>MOST FREQUENT SIDE: &nbsp <b>" + Math.max.apply(null, this.cnt) + "</b>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp LESS FREQUENT SIDE: <b>" + Math.min.apply(null, this.cnt) + "</b></td></tr></table></div>");
+
+            this.calcAvg();
+            };
+            this.calcAvg=function () {
+                for(var i=0;i<6;i++){
+                    var cnt=this.cnt[i];
+                    this.avg[i]=(cnt/this.nrolls)*100;
+                }
+            };
+        }
+        function setNRoll(diceNum){
+            switch (diceNum) {
+                case 1:{
+                    var d1nrolls=document.getElementById("1nroll").value;
+                    //alert(d1nrolls);
+                    if(isFinite(d1nrolls)){
+                        //
+                        if(d1nrolls>0&&d1nrolls<=100000000) {
+
+                            sessionStorage.setItem('d1nroll', d1nrolls.toString());
+                            location.reload();
+                        }
+                        else{
+                            alert("Range: 1 - 100 000 000");
+                            break;
+                        }
+                    }
+                    else
+                        alert("Please input only number");
+                }
+                break;
+                case 2:{
+
+                    var d2nrolls=document.getElementById("2nroll").value;
+                    //alert(d2nrolls);
+                    if(isFinite(d2nrolls)){
+                        //
+                        if(d2nrolls>0&&d2nrolls<=100000000) {
+                            sessionStorage.setItem('d2nroll', d2nrolls.toString());
+                            location.reload();
+                        }
+                        else{
+                            alert("Range: 1 - 100 000 000");
+                            break;
+                        }
+                    }
+                    else
+                        alert("Please input only number");
+                }
+                    break;
+            }
+
+
+        }
+
+
+
+        document.writeln("<br>");
+        //sim1=new Simulation1(120000.0,0.10,0.09,0.06);
+        //sim2=new Simulation2(120000.0,0.06,0.12, 0.10,0.06);
+        var dice1=new diceRollSimulation(1,getDice1NRoll());
+        var dice2=new diceRollSimulation(2, getDice2NRoll());
+
+        dice1.roll();
+        dice2.roll();
+
+       //document.writeln("<br><br><br><br><br><br><br><br><br><br><br>");
+        //document.writeln("<div><h2>Computer Science<br>201521641 Abdulaziz</h2> ");
+        //sim1.calc();
+
+        //sim2.calc();
+
+
+    </script>
+    <div class='stat-div'><table><caption>주사위 1</caption><tr><td> <div id="chart1" class="chart"></div></td></tr></table></div>
+    <div class='stat-div'><table><caption>주사위 2</caption><tr><td> <div id="chart2" class="chart" ></div></td></tr></table></div>
+    <div class='stat-div'><table><caption>주사위 비교</caption><tr><td> <div id="chart3" class="chart" ></div></td></tr></table></div>
+    <script src="canvasjs.min.js"></script>
+    <script>
+        function makeChartWithIndexLabel(chartId,sides,nrolls) {
+
+            var chart = new CanvasJS.Chart(chartId, {
+                animationEnabled: true,
+                theme: "light2", // "light1", "light2", "dark1", "dark2"
+                title: {
+                    text: "Roll Count: "+nrolls
+                },
+                axisY: {
+                    title: "Occurrence",
+                    suffix: "  times ",
+                    includeZero: false
+                },
+                axisX: {
+                    title: "Side"
+                },
+                data: [{
+                    type: "column",
+                    yValueFormatString: "#,###\" times\"",
+                    dataPoints: [
+                        { label: "Side 1", y: sides[0] },
+                        { label: "Side 2", y: sides[1] },
+                        { label: "Side 2", y: sides[2] },
+                        { label: "Side 3", y: sides[3] },
+                        { label: "Side 5", y: sides[4] },
+                        { label: "Side 6", y: sides[5] }
+
+                    ]
+                }]
+            });
+            chart.render();
+
+        }
+        function makeMultiSeriesChart(charId,dice1Avg,dice2Avg){
+
+            var chart = new CanvasJS.Chart(charId, {
+                animationEnabled: true,
+                title:{
+                    text: "Percentage Dice 1  vs  Dice 2"
+                },
+
+                axisY: {
+                    title: "Occurrence",
+                    includeZero: false,
+                    suffix: " %"
+                },
+                legend:{
+                    cursor: "pointer",
+                    fontSize: 16,
+                    itemclick: toggleDataSeries
+                },
+                toolTip:{
+                    shared: true
+                },
+                data: [{
+                    name: "Dice 1",
+                    type: "spline",
+                    yValueFormatString: "#,## %",
+                    showInLegend: true,
+                    dataPoints: [
+                        { label: "Side 1", y: dice1Avg[0] },
+                        { label: "Side 2", y: dice1Avg[1] },
+                        { label: "Side 3", y: dice1Avg[2] },
+                        { label: "Side 4", y: dice1Avg[3] },
+                        { label: "Side 5", y: dice1Avg[4] },
+                        { label: "Side 6", y: dice1Avg[5] }
+                    ]
+                },
+                    {
+                        name: "Dice 2",
+                        type: "spline",
+                        yValueFormatString:  "#,## %",
+                        showInLegend: true,
+                        dataPoints: [
+                            { label: "Side 1", y: dice2Avg[0] },
+                            { label: "Side 2", y: dice2Avg[1] },
+                            { label: "Side 3", y: dice2Avg[2] },
+                            { label: "Side 4", y: dice2Avg[3] },
+                            { label: "Side 5", y: dice2Avg[4] },
+                            { label: "Side 6", y: dice2Avg[5] }
+                        ]
+                    }]
+            });
+            chart.render();
+
+            function toggleDataSeries(e){
+                if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                }
+                else{
+                    e.dataSeries.visible = true;
+                }
+                chart.render();
+            }
+        }
+
+        makeChartWithIndexLabel("chart1", dice1.getCnt(),getDice1NRoll());
+        makeChartWithIndexLabel("chart2", dice2.getCnt(),getDice2NRoll());
+        makeMultiSeriesChart("chart3",dice1.getAvg(),dice2.getAvg());
+    </script>
+</body>
+</html>
